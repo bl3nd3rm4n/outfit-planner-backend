@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +22,17 @@ public class User {
     private String username;
     @Column
     private String password;
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
+    }
+
+    @Column
+    private Date lastLogin;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "userid")

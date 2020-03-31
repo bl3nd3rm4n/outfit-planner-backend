@@ -13,5 +13,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     User getByUsername(String username);
 
-    List<User> getAllByLastLoginGreaterThan(Date lastLogin);
+    List<User> getAllByLastLoginBetween(Date start, Date end);
 }

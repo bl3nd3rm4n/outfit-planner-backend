@@ -1,8 +1,10 @@
 package com.lid.outfitplannerbackend;
 
+import com.lid.outfitplannerbackend.model.User;
 import com.lid.outfitplannerbackend.persistence.UserRepository;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,38 +20,52 @@ import static org.junit.jupiter.api.Assertions.*;
 @ComponentScan("main.java.persistence.*")
 public class OutfitPlannerBackendApplicationTests {
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
-	@Test
-	public void contextLoads() {
-	}
-
-	@Test
-	public void testInvalidDate() {
-		assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("caca maca")));
-		assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("1.1.1")));
-	}
-
-	@Test
-	public void invalidBoundaryTest() {
-		assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("2019-13-13")));
-		assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("2020-00-00")));
-	}
-
-	@Test
-	public void validBoundaryTest() {
-		assertEquals(userRepository.getAllByLastLoginGreaterThan(Date.valueOf("2020-01-01")).size(), 1);
-		assertTrue(userRepository.getAllByLastLoginGreaterThan(Date.valueOf("9999-12-31")).isEmpty());
-	}
-
-	@Test
-    public void datePartition() {
-	    assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("String care nu reprezinta o data")));
-	    assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("333-01-01")));
-	    assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginGreaterThan(Date.valueOf("55555-01-01")));
-	    assertTrue(userRepository.getAllByLastLoginGreaterThan(Date.valueOf("9998-01-01")).isEmpty());
+    @Test
+    public void contextLoads() {
     }
 
+    @BeforeAll
+    public void addTestData() {
+        User user = new User();
+        user.setUserId(666);
+        user.setUsername("test");
+        user.setPassword("test");
+        user.setLastLogin(Date.valueOf("2020-03-03"));
+        userRepository.saveAndFlush(user);
+    }
+
+    @Test
+    public void testInvalidDate() {
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("banane"), Date.valueOf("")));
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("1.1.1"), null));
+    }
+
+    @Test
+    public void invalidBoundaryTest() {
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("2019-13-13"), Date.valueOf("2019-13-13")));
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("2020-00-00"), Date.valueOf("2020-00-00")));
+    }
+
+    @Test
+    public void validBoundaryTest() {
+        assertFalse(userRepository.getAllByLastLoginBetween(Date.valueOf("2020-01-01"), Date.valueOf("2020-05-01")).isEmpty());
+        assertTrue(userRepository.getAllByLastLoginBetween(Date.valueOf("9999-12-31"), Date.valueOf("9999-12-31")).isEmpty());
+    }
+
+    @Test
+    public void datePartition() {
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("String care nu reprezinta o data"), Date.valueOf("9999-12-31")));
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("333-01-01"), Date.valueOf("9999-12-31")));
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("55555-01-01"), Date.valueOf("9999-12-31")));
+        assertTrue(userRepository.getAllByLastLoginBetween(Date.valueOf("9998-01-01"), Date.valueOf("9999-12-31")).isEmpty());
+    }
+
+    @AfterAll
+    public void deleteTestData() {
+        userRepository.deleteById(666);
+    }
 }

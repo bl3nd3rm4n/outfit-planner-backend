@@ -8,15 +8,41 @@
 		<version>2.1.9.RELEASE</version>
 		<relativePath/>
 	</parent>
-	<!--<groupId>com.lid</groupId>-->
-	<!--<artifactId>outfit-planner-backend</artifactId>-->
-	<!--<version>0.0.1-SNAPSHOT</version>-->
-	<!--<name>outfit-planner-backend</name>-->
-	<!--<description>Backend side of the OutfitPlanner app</description>-->
+	<groupId>com.lid</groupId>
+	<artifactId>outfit-planner-backend</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>outfit-planner-backend</name>
+	<description>Backend side of the OutfitPlanner app</description>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>https://repo.maven.apache.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>

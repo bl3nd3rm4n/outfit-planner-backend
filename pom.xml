@@ -8,11 +8,11 @@
 		<version>2.1.9.RELEASE</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.lid</groupId>
-	<artifactId>outfit-planner-backend</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>outfit-planner-backend</name>
-	<description>Backend side of the OutfitPlanner app</description>
+	<!--<groupId>com.lid</groupId>-->
+	<!--<artifactId>outfit-planner-backend</artifactId>-->
+	<!--<version>0.0.1-SNAPSHOT</version>-->
+	<!--<name>outfit-planner-backend</name>-->
+	<!--<description>Backend side of the OutfitPlanner app</description>-->
 
 	<properties>
 		<java.version>1.8</java.version>

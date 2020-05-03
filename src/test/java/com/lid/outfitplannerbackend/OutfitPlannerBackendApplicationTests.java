@@ -2,9 +2,9 @@ package com.lid.outfitplannerbackend;
 
 import com.lid.outfitplannerbackend.model.User;
 import com.lid.outfitplannerbackend.persistence.UserRepository;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,10 +28,9 @@ public class OutfitPlannerBackendApplicationTests {
     public void contextLoads() {
     }
 
-    @BeforeAll
+    @Before
     public void addTestData() {
         User user = new User();
-        user.setUserId(666);
         user.setUsername("test");
         user.setPassword("test");
         user.setLastLogin(Date.valueOf("2020-03-03"));
@@ -64,8 +63,8 @@ public class OutfitPlannerBackendApplicationTests {
         assertTrue(userRepository.getAllByLastLoginBetween(Date.valueOf("9998-01-01"), Date.valueOf("9999-12-31")).isEmpty());
     }
 
-    @AfterAll
+    @After
     public void deleteTestData() {
-        userRepository.deleteById(666);
+        userRepository.deleteAll();
     }
 }

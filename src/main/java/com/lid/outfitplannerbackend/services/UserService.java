@@ -34,6 +34,7 @@ public class UserService implements IService<User> {
         return user.orElse(null);
     }
 
+    @Transactional
     public Clothing insertClothing(int userId, Clothing clothing) {
         User user = userRepository.getOne(userId);
         user.getClothes().add(clothing);

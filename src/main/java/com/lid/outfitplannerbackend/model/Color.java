@@ -23,6 +23,12 @@ public class Color implements Comparable<Color> {
     public Color() {
     }
 
+    public Color(String name, String centerRgb, double endHsv) {
+        this.name = name;
+        this.centerRgb = centerRgb;
+        this.endHsv = endHsv;
+    }
+
     public int getId() {
         return id;
     }

@@ -2,9 +2,11 @@ package com.lid.outfitplannerbackend;
 
 import com.lid.outfitplannerbackend.model.User;
 import com.lid.outfitplannerbackend.persistence.UserRepository;
+import com.lid.outfitplannerbackend.services.ClothingService;
+import com.lid.outfitplannerbackend.services.UserService;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,20 +24,38 @@ public class OutfitPlannerBackendApplicationTests {
 
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ClothingService clothingService;
 
     @Test
     public void contextLoads() {
     }
 
-    @BeforeAll
+    @Before
     public void addTestData() {
         User user = new User();
-        user.setUserId(666);
         user.setUsername("test");
         user.setPassword("test");
         user.setLastLogin(Date.valueOf("2020-03-03"));
         userRepository.saveAndFlush(user);
+        user = userService.login(user.getUsername(), user.getPassword());
+//        Clothing clothing = new Clothing();
+//        clothing = clothingService.insert(clothing);
+//        userService.insertClothing(user.getUserId(), clothing);
+    }
+
+    @Test
+    public void loginTest() {
+        assertNotNull(userService.login("test", "test"));
+        assertNull(userService.login("fail", "test"));
+    }
+
+    @Test
+    public void registerTest() {
+        assertNull(userService.register("test", "test"));
+        assertNotNull(userService.register("newtest", "test"));
     }
 
     @Test
@@ -64,8 +84,8 @@ public class OutfitPlannerBackendApplicationTests {
         assertTrue(userRepository.getAllByLastLoginBetween(Date.valueOf("9998-01-01"), Date.valueOf("9999-12-31")).isEmpty());
     }
 
-    @AfterAll
+    @After
     public void deleteTestData() {
-        userRepository.deleteById(666);
+        userRepository.deleteAll();
     }
 }

@@ -19,6 +19,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.util.Base64;
+import java.util.List;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,56 +91,34 @@ public class OutfitPlannerBackendApplicationTests {
         categoryRepository.flush();
     }
 
-    private void addClothes(Integer userId) throws IOException {
+    private void createClothing(Integer userId, String picturePath, List<Category> categories, Type type) throws IOException {
         String prefix = "data:image/png;base64,";
 
-        Clothing tShirt1 = new Clothing();
-        tShirt1.setType(typeRepository.findAll().get(0));
-        tShirt1.setCategories(singletonList(categoryRepository.findAll().get(0)));
-        File picture1 = new File("src\\test\\resources\\tops\\hmgoepprod1.jpg");
-        tShirt1.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picture1.toPath()))));
-        Clothing insert = clothingService.insert(tShirt1);
-        userService.insertClothing(userId, insert);
+        Clothing clothing = new Clothing();
+        clothing.setCategories(categories);
+        clothing.setType(type);
 
-        Clothing tShirt2 = new Clothing();
-        tShirt2.setType(typeRepository.findAll().get(0));
-        tShirt2.setCategories(singletonList(categoryRepository.findAll().get(0)));
-        File picture2 = new File("src\\test\\resources\\tops\\hmgoepprod2.jpg");
-        tShirt2.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picture2.toPath()))));
-        Clothing insert1 = clothingService.insert(tShirt2);
-        userService.insertClothing(userId, insert1);
+        File picture = new File(picturePath);
+        byte[] bytes = Files.readAllBytes(picture.toPath());
+        clothing.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(bytes)));
 
-        Clothing tShirt3 = new Clothing();
-        tShirt3.setType(typeRepository.findAll().get(0));
-        tShirt3.setCategories(singletonList(categoryRepository.findAll().get(0)));
-        File picture3 = new File("src\\test\\resources\\tops\\hmgoepprod3.jpg");
-        tShirt3.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picture3.toPath()))));
-        Clothing insert2 = clothingService.insert(tShirt3);
-        userService.insertClothing(userId, insert2);
+        userService.insertClothing(userId, clothingService.insert(clothing));
+    }
 
-        Clothing pants1 = new Clothing();
-        pants1.setType(typeRepository.findAll().get(1));
-        pants1.setCategories(categoryRepository.findAll());
-        File picturePants1 = new File("src\\test\\resources\\pants\\hmgoepprod1.jpg");
-        pants1.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picturePants1.toPath()))));
-        Clothing insert3 = clothingService.insert(pants1);
-        userService.insertClothing(userId, insert3);
+    private void addClothes(Integer userId) throws IOException {
+        String pathTop1 = "src\\test\\resources\\tops\\hmgoepprod1.jpg";
+        String pathTop2 = "src\\test\\resources\\tops\\hmgoepprod2.jpg";
+        String pathTop3 = "src\\test\\resources\\tops\\hmgoepprod3.jpg";
+        String pathPants1 = "src\\test\\resources\\pants\\hmgoepprod1.jpg";
+        String pathPants2 = "src\\test\\resources\\pants\\hmgoepprod2.jpg";
+        String pathPants3 = "src\\test\\resources\\pants\\hmgoepprod3.jpg";
 
-        Clothing pants2 = new Clothing();
-        pants2.setType(typeRepository.findAll().get(1));
-        pants2.setCategories(categoryRepository.findAll());
-        File picturePants2 = new File("src\\test\\resources\\pants\\hmgoepprod2.jpg");
-        pants2.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picturePants2.toPath()))));
-        Clothing insert4 = clothingService.insert(pants2);
-        userService.insertClothing(userId, insert4);
-
-        Clothing pants3 = new Clothing();
-        pants3.setType(typeRepository.findAll().get(1));
-        pants3.setCategories(categoryRepository.findAll());
-        File picturePants3 = new File("src\\test\\resources\\pants\\hmgoepprod3.jpg");
-        pants3.setPicture(concatenate(prefix.getBytes(), Base64.getEncoder().encode(Files.readAllBytes(picturePants3.toPath()))));
-        Clothing insert5 = clothingService.insert(pants3);
-        userService.insertClothing(userId, insert5);
+        createClothing(userId, pathTop1, singletonList(categoryRepository.findAll().get(0)), typeRepository.findAll().get(0));
+        createClothing(userId, pathTop2, singletonList(categoryRepository.findAll().get(0)), typeRepository.findAll().get(0));
+        createClothing(userId, pathTop3, singletonList(categoryRepository.findAll().get(0)), typeRepository.findAll().get(0));
+        createClothing(userId, pathPants1, categoryRepository.findAll(), typeRepository.findAll().get(1));
+        createClothing(userId, pathPants2, categoryRepository.findAll(), typeRepository.findAll().get(1));
+        createClothing(userId, pathPants3, categoryRepository.findAll(), typeRepository.findAll().get(1));
     }
 
     @Before

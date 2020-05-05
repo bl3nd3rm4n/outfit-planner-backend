@@ -3,6 +3,7 @@ package com.lid.outfitplannerbackend;
 import com.lid.outfitplannerbackend.model.*;
 import com.lid.outfitplannerbackend.persistence.*;
 import com.lid.outfitplannerbackend.services.ClothingService;
+import com.lid.outfitplannerbackend.services.OutfitService;
 import com.lid.outfitplannerbackend.services.UserService;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +22,8 @@ import java.sql.Date;
 import java.util.Base64;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,6 +46,9 @@ public class OutfitPlannerBackendApplicationTests {
     private CategoryRepository categoryRepository;
     @Autowired
     private ClothingRepository clothingRepository;
+
+    @Autowired
+    private OutfitService outfitService = new OutfitService(null,null,null,null,null);
 
     @Test
     public void contextLoads() {
@@ -180,6 +186,44 @@ public class OutfitPlannerBackendApplicationTests {
         assertEquals(clothingRepository.count(),
                 clothingRepository.findAllByCategoriesContains(categoryRepository.findAll().get(0)).size());
         assertEquals(3, clothingRepository.findAllByCategoriesContains(categoryRepository.findAll().get(1)).size());
+    }
+
+    @Test
+    public void integrationTest1(){
+        // tests from blackbox testing module
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("banane"), Date.valueOf("")));
+        // test from whitebox testing module
+        assertThrows(IndexOutOfBoundsException.class, () -> outfitService.getFirstColor(emptyList()));
+        Color color = new Color();
+        color.setName("gray");
+        assertEquals(color, outfitService.getFirstColor(singletonList(color)));
+
+    }
+
+    @Test
+    public void integrationTest2(){
+        // tests from blackbox testing module
+        assertThrows(IllegalArgumentException.class, () -> userRepository.getAllByLastLoginBetween(Date.valueOf("1.1.1"), null));
+        // test from whitebox testing module
+        assertThrows(IndexOutOfBoundsException.class, () -> outfitService.getFirstColor(emptyList()));
+        Color color = new Color();
+        color.setName("gray");
+        color.setName("blue");
+        assertEquals(color, outfitService.getFirstColor(singletonList(color)));
+    }
+
+    @Test
+    public void integrationTest3(){
+        // tests from blackbox testing module
+        assertFalse(userRepository.getAllByLastLoginBetween(Date.valueOf("2020-01-01"), Date.valueOf("2020-05-01")).isEmpty());
+        // test from whitebox testing module
+        Color color = new Color();
+        color.setName("gray");
+        color.setName("blue");
+        Color black = new Color();
+        black.setName("black");
+        assertEquals(color, outfitService.getFirstColor(asList(black, color)));
+
     }
 
     @After

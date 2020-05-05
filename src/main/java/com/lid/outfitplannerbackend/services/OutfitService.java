@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -108,17 +109,14 @@ public class OutfitService implements IService<Outfit> {
         return allClothes;
     }
 
-    private Color getFirstColor(List<Color> colors) {
-        Color firstColor = null;
+    public Color getFirstColor(@NotEmpty  List<Color> colors) {
         for (Color color : colors) {
-            if (!color.getName().equals("white") && !color.getName().equals("gray") && !color.getName().equals("black")) {
-                firstColor = color;
-                break;
+            if (!color.getName().equals("white") &&
+                    !color.getName().equals("gray") &&
+                    !color.getName().equals("black")) {
+                return color;
             }
         }
-        if (firstColor == null) {
-            firstColor = colors.get(0);
-        }
-        return firstColor;
+        return colors.get(0);
     }
 }
